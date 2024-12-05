@@ -1,0 +1,142 @@
+---
+title: "Helper Function"
+author: "Sheyanne Rodriguez"
+date: "2024-09-05"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## What are helper functions and why are we covering them?
+
+Helper functions enable us to perform complex algorithms in a more concise and readable manner. They are useful for operations that are to be repeated over and over, or need to be called from within different places in the notebook.
+
+Helper functions break out the steps of complex logic into "bite size" separate, and callable functions.
+
+\*\*Helper functions will be useful for practice exam problems.
+
+```{python}
+#list of names
+presidents_usa = ["George Washington", "John Adams", "Thomas Jefferson", "James Madison", "James Monroe", "Andrew Jackson"]
+```
+
+Divide the names into first and last name elements:
+
+```{python}
+split_names_var = [name.split(" ") for name in presidents_usa]
+split_names_var
+```
+
+Divide the names into last and first name elements:
+
+```{python}
+swapped_list_var = [split_name[1] + ", " + split_name[0] for split_name in split_names_var]
+swapped_list_var
+```
+
+Write a function, name_reverse() that takes as input a list of names and outputs them in as a list of names, with each name in the format of *last name, first name,* in alphabetical order.
+
+```{python}
+def name_reverse(name_list):
+  #split the names into a list first and last names
+  split_names_var = [name.split(" ") for name in name_list]
+  #print(split_names)
+  
+  swapped_list_var = [split_name[1] + ", " + split_name[0] for split_name in split_names_var]
+  #print(swapped_list)
+  
+  swapped_list_var.sort()
+  #print(swapped_list)
+  
+  return swapped_list_var
+```
+
+```{python}
+# test the function
+output_list = (name_reverse(presidents_usa))
+print(output_list)
+```
+
+Now, let's do this using helper functions, within the main function. We'll change the function name to name_reverse_helper().
+
+```{python}
+def name_reverse_helper(name_list):
+  
+  #this is a helper function
+  def split_names_func(list_to_split):
+    #split the names into a list first and last names
+    split_name_list = [name.split(" ") for name in list_to_split]
+    return split_name_list
+  
+  #this is another helper function
+  def swap_names_func(list_to_swap):
+    swapped_list = [swap_name[1] + ", " + swap_name[0] for swap_name in list_to_swap]
+    return swapped_list
+  
+  #call first helper function
+  first_list = split_names_func(name_list)
+  
+  #call second helper function
+  alpha_list = swap_names_func(first_list)
+  
+  alpha_list.sort()
+  
+  return alpha_list
+
+#test the function
+output_list = (name_reverse_helper(presidents_usa))
+print(output_list)
+```
+
+**\*\* NOTE: helper functions only exist within the context of the name functions. This is known as their *scope.***
+
+```{python}
+#uncomment to illustarte error
+#the error is because this fn's scope is only within the main function in which it is defined.
+#error_output = split_names_func(presidents_usa)
+```
+
+**If you want the helper function to be callable anywhere in the notebook:**
+
+-   Define the helper function at the notebook level (not within another function).
+
+A good example of being provided a helper function is some complex statistical calculation. Instead of asking the student to write the function, the exam will provide it and the student will only need to call it as a part of their solution.
+
+```{python}
+#this is a global helper function
+def split_names_func_global(list_to_split):
+  #split the names into first and last names
+  split_name_list = [name.split(" ") for name in list_to_split]
+  return split_name_list
+```
+
+```{python}
+#this is another global helper function
+def swap_names_func_global(list_to_swap):
+  swapped_list = [swap_name[1] + ", " + swap_name[0] for swap_name in list_to_swap]
+  return swapped_list
+```
+
+Now define your functions using the global helper functions.
+
+```{python}
+def name_reverse_helper_global(name_list):
+  #call first global helper function
+  first_list = split_names_func_global(name_list)
+  #call second global helper function
+  alpha_list = swap_names_func_global(first_list)
+  
+  alpha_list.sort()
+  
+  return alpha_list
+```
+
+Test the functions
+
+```{python}
+#test the functions
+output_list = (name_reverse_helper_global(presidents_usa))
+print(output_list)
+```

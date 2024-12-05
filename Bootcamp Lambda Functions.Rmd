@@ -1,0 +1,143 @@
+---
+title: "Lambda Functions"
+author: "Sheyanne Rodriguez"
+date: "2024-09-09"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Lambda Functions (or, anonymous functions)
+
+An Example:
+
+The Lambda syntax is interpreted as follows:
+
+-   Take the variables passed and bind them to the names *before* the colon
+
+-   Return the result of the expression *after* the colon
+
+We create "anonymous functions" by using the *lambda* keyword, which has no meaning other than "we are declaring an anonymous function".
+
+**Lambda expressions: "lambda" [parameter_list] ":" expression**
+
+the expression is what you want to do with this list of parameters.
+
+```{python}
+#How would we even define this function without giving it a name
+#We cannot do this without using lambda expressions
+def multiply_function(x):
+  return x * 2
+
+print(multiply_function(2))
+
+#here, we define the function, and then assign it to the variable
+#name "equivalent_lambda"
+equivalent_lambda = lambda x : x * 2 # x is the parameter
+print(equivalent_lambda(2)) # 2 is the x
+```
+
+If we print the functions themselves, you'll see that our "lambda" function has no name associated with it. This is why we call them "anonymous functions".
+
+```{python}
+print("Our function is named: ")
+print(multiply_function)
+print("Our lambda function is named ... <lambda>?")
+print(equivalent_lambda)
+```
+
+**Note:** From an efficiency standpoint- the decision between using a lambda function or a real function is based on is it going to be efficient enough? However, is more based on the maintainability of the code. Therefore, conciseness and readability is the main purpose of using a lambda function.
+
+## Use Cases
+
+Lambda functions make it easy for us to quickly define functions which aren't important in the rest of the program. We might want to do this if we have a function which takes a *second* function as an argument.
+
+Some examples of built-in functions where this is useful include:
+
+-   map()
+
+-   filter()
+
+-   itertools.reduce()
+
+-   sorted()
+
+Here's an example where we reduce our program from 4 lines to 2 lines, without making the program much harder to read.
+
+```{python}
+demo_tuple = (1, 2, 3, 4, 5)
+
+#Without lambda functions
+def square_value(x):
+  return x**2
+squared_values = map(square_value, demo_tuple)
+#map() allows you to apply a function to every item in an iterable
+#such as a list or tuple
+#map(function, iterable)
+#function: to execute for ea item in the iterable
+#iterable: whose items are to be processed by the function
+print("Without lambda: ", tuple(squared_values))
+
+#with lambda function
+squared_values = map(lambda x : x **2, demo_tuple)
+print("With lambda:", tuple(squared_values))
+```
+
+This pattern appears a lot when we work with non-standard Python types, such as when we use Pandas data structures. We will use Pandas extensively in this course and will cover it in more depth later, so consider this an example of what's coming up.
+
+Imagine we have a "table" of data (which is represented as a Pandas DataFrame). If we want to apply some function to each *row* of the table, we can use the .apply() method and use a lambda function to do this. Here's an example.
+
+-   In the example below, imagine we are tracking the scores of five different sports teams for five games.
+
+```{python}
+import pandas as pd
+import random
+
+#This cell does not output anything DO NOT RUN
+team_scores = pd.DataFrame(
+  {"Team 1": [random.randint(0, 50) for - in range(5)],
+  "Team 2" : [random.radint(0, 50) for - in range(5)],
+  "Team 3" : [random.radint(0, 50) for - in range(5)]}
+)
+```
+
+We can use lambda functions to determine the range for each team's records, like this:
+
+```{python}
+team_scores
+#DO NOT RUN
+```
+
+Let's write a function that we calc the range.
+
+```{python}
+#Without Lambda Functions
+def calc_range(x):
+  return x.max() - x.min()
+team_scores.apply(calc_range)
+
+#With Lambda Function
+team_scores.apply(lambda x: x.max() - x.min())
+#team_scores.apply(lambda x: x.max() - x.min(), axis-1)
+#another way to write, add axis-1
+```
+
+### Limitations
+
+You cannot do either of the following inside of a lambda function:
+
+-   Leave annotations
+
+-   Variable assignment
+
+If you have a sufficiently complicated function, it may be worth writing it out in the more traditional way.
+
+### Summary
+
+Lambda functions make it easy to:
+
+-   Quickly create functions which aren't important for your program's structure.
+
+-   Make your code easier to read(fewer lines for unimportant work).

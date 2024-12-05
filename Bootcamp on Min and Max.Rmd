@@ -1,0 +1,93 @@
+---
+title: "Min and Max"
+author: "Sheyanne Rodriguez"
+date: "2024-09-11"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Simple Work: Random Numbers
+
+Let's answer the following about a sequence of random numbers:
+
+1.  What is the largest value?
+
+2.  What is the smallest value?
+
+3.  What are the 5 largest values?
+
+4.  What are the 5 smallest values?
+
+```{python}
+from random import randint
+
+random_tup = tuple(randint(1, 500) for _ in range(50))
+
+#LARGEST VALUE
+max(random_tup)
+
+#SMALLEST VALUE
+min(random_tup)
+
+#If we want the N-nearest values, we'll need to sort these values
+sorted_tup = sorted(random_tup)
+
+#5 SMALLEST
+sorted_tup[:5]
+
+#5 LARGEST
+sorted_tup[::-1][:5] #sort in opposite direction like reversing the list
+sorted_tup[::-5] #also works
+```
+
+### More complicated dictionaries
+
+Assume we have a dictionary containing:
+
+-   Keys: programming languages
+
+-   Years: first published
+
+How can we answer the questions we outlined earlier?
+
+```{python}
+langs = {
+    'APL': 1966,
+    'Fortran': 1957,
+    'Python2': 2000,
+    'Python3': 2008,
+    'R': 1993,
+    'JavaScript': 1995,
+    'Java': 1995,
+    'C': 1972,
+    'Clojure': 2007,
+    'Julia': 2012
+}
+#Newest language
+max(langs, key = lambda language: langs[language])
+
+print()
+
+#Oldest language
+min(langs, key = lambda language: langs[language])
+
+print()
+
+#If we want the N-largest or N-smallest values, we need to sort these values:
+#Note: we could use .items() here instead of zip()
+sorted_langs = sorted( zip(langs, langs.values()),
+key = lambda item: item[1])
+
+print()
+
+#5 OLDEST
+sorted_langs[:5]
+
+print()
+
+#5 newest
+sorted_langs[::-1][:5]
+```

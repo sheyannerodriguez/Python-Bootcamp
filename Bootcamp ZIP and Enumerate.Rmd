@@ -1,0 +1,56 @@
+---
+title: "Zip Enumerate"
+author: "Sheyanne Rodriguez"
+date: "2024-09-11"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## ZIP
+
+Python's zip() function "pairs up" the elements of multiple iterables to create a new iterable.
+
+-   The elements returned from this iterable will be tuples, and the tuples will contain the pairwise elements of the original iterables.
+
+Example:
+
+```{python}
+first_name = ['Albert', 'Chris', 'Jen']
+last_name = ['Waldron', 'Kinkade', 'Sherwood']
+zipped = zip(first_name, last_name) #zip of two lists 
+#it is creating a generator
+print(zipped)
+
+# create a list, using the new "zipped" iterable
+zip_list = list(zipped) #creates a list of the paired iterables
+print(zip_list)
+
+# create the zip list directly
+zip_list2 = list(zip(first_name, last_name))
+print(zip_list2)
+```
+
+The way you can use the generator is you can access it:
+
+```{python}
+print(zip(first_name, last_name))
+
+print(i for i in zip(first_name, last_name)) #for ea element in the generator
+```
+
+For a, b in zip(first_name, last_name), Python will interpret that line. Now, because the 'list' = (zip(first_name, last_name)) is creating tuples, for things that look like a, b, Python is going to say, "For a to be the 1st element of each tuple and for b to be the 2nd element of each tuple". Therefore, when we print each of the "a's" an output it just the elements in the first list: 'Albert', 'Chris', 'Jen'.
+
+```{python}
+print([a for a, b in zip(first_name, last_name)])
+```
+
+```{python}
+#To show the generator disappears
+print(list((zipped)))
+print()
+
+print(zip_list)
+```

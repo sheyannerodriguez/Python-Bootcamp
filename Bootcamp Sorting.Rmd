@@ -1,0 +1,186 @@
+---
+title: "Sorting"
+author: "Sheyanne Rodriguez"
+date: "2024-09-09"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Sorting \*\*MIDTERM
+
+### Introduction
+
+It's common for programmers to want to sort groups of data. For example, we might want to sort a list of employees by their start date. Python provides a built in function for doing this sort of work: ***sorted()***.
+
+**NOTE** that the ***sorted()*** function returns a **LIST.**
+
+1.  If you need a different type, you'll need to cast it to the new type.
+
+Python has an entire tutorial dedicated to Sorting.
+
+### Simple Sorting, to sort a tuple
+
+A simple ascending sort is very easy: just call the sorted() function. It returns a new sorted list:
+
+```{python}
+my_tuple = (5, 2, 3, 1, 4)
+sorted(my_tuple)
+```
+
+-   You can pass any iterable to ***sorted().***
+
+If we want, we can use the *reverse* keyword to return the items in reverse order:
+
+```{python}
+sorted(my_tuple, reverse = True)
+```
+
+### Key Functions
+
+By default, Python will simply use the \< operator to compare values. So, when determining order of integers, ***sorted()*** will evaluate the expression a \< b for various values and use the results to order the items.
+
+However, we can call a function on each item *before* the comparison is made. This gives us a lot of power to arbitrarily order our iterables. For example, we can sort a list of tuples by checking the element at the 2nd index.
+
+We typically, do this by using a *lambda* function, (which we learned about previously).
+
+**I should know this method of sorting, with a *lambda* function**.
+
+### Sort a list of tuples, using *lambda*
+
+```{python}
+student_tuples = [
+  ('Rich', 'A', 15),
+  ('Chris', 'B', 12),
+  ('Katie', 'B', 10),
+  ('Jen', 'A', 14)
+]
+```
+
+The key that you want to sort on is the *lambda function*. So, you pass in the data set 'student_tuples' and then the 'key=' tells the **sorted()** function here's how I want to sort it. And by using a *lambda function*, we're passing in a data element. we're calling it 'tup' because it comes from the 'student_tuples' and we're sorting on the 3rd element in the tuple which is the 2nd index =\> tup[2].
+
+```{python}
+# Sort in ascending order, by the 3rd element in each tuple
+asc_sort = sorted(student_tuples, key = lambda tup: tup[2])
+asc_sort
+```
+
+For descending order, place a negative sign ' - ' in front of 'tup[2]' ==\> -tup[2]
+
+```{python}
+#Sort in descending order by the 3rd element in each tuple
+desc_sort = sorted(student_tuples, key = lambda tup: -tup[2])
+desc_sort
+```
+
+### Sort a list of tuples, using a lambda function, and break a tie if there is one.
+
+Sort the list in descending order by the second element in ascending order, with ties broken by the third element in descending order.
+
+```{python}
+#Sort in ascending order, by the 2nd element in each tuple
+#Break any ties by sorting on the 3rd element, in descending order
+#Note that we have to put the two sorts in () to define the sorts
+tiebreaker_sort = sorted(student_tuples, key = lambda tup: (tup[1], -tup[2]))
+#This is breaking the list into two different orders
+#This means at the 1st index (2nd element), we ascend the "grades"
+#Then at the 2nd index (3rd element), we descend the "scores"
+tiebreaker_sort
+```
+
+What about the scenario in which we not only want to sort this list of tuples, but we only want to return A TOP or BOTTOM number of tuples (and not the the entire list)? HINT HINT
+
+**Use SLICING** to return the correct elements.
+
+```{python}
+#return the top X number of elements in the list
+x = 2
+tiebreaker_sort_top_x = tiebreaker_sort[:x]
+tiebreaker_sort_top_x
+```
+
+```{python}
+#return the bottom x number of elements in the list
+tiebreaker_sort_bottom_x = tiebreaker_sort[-x:]
+tiebreaker_sort_bottom_x
+```
+
+### Sorting a dictionary (basic)
+
+```{python}
+students = {
+  'Aditi': 98,
+  'Li': 86,
+  'John': 93
+}
+students
+```
+
+```{python}
+#Let's sort them by their grades in descending order
+#We have broken out the components of the sorted() function,
+#so that students can easily understand each component.
+sorted_students = sorted(students,
+key = lambda name: students[name], 
+reverse = True)
+#can also put -students[name] instead of reverse = True
+
+print("Students, ranked by highest grades to lowest:", sorted_students)
+```
+
+### Sorting a Counter dictionary (advanced)
+
+*Recall that a **Counter** object returns a dictionary in which the keys are the items in question (words, names, numbers, for example) and the value is the number/count of the items.*
+
+[We may want to sort some list of items and return the TOP or BOTTOM number of those items. HINT HINT]{.underline}
+
+```{python}
+#Define a basic Counter dictionary
+from collections import Counter
+a = Counter([1, 2, 21, 12, 2, 44, 5,
+              13, 15, 5, 19, 21, 5,
+              1, 2, 21, 12, 2, 44, 5,
+               2, 12, 44, 19])
+print(a)
+print(dict(a))
+print()
+a.items()
+```
+
+The above example outputs how many numbers are repeated e.g. (2: 5) those become keys.
+
+Recall that the items() function of a dict returns an iterable list of tuples, of the key-value pairs. The key is the first tuple element, and the value is the second tuple element.
+
+**A couple of basic operations:**
+
+```{python}
+#sort the counter by the key, which is the first element of the tuple output
+sorted_counter_first = sorted(a.items(), key = lambda x: x[0])
+#0 element is the key, 1st element is the value
+sorted_counter_first
+
+print()
+
+#sort the counter by the value, which is the second element of the tuple output, in descending order
+sorted_counter_second = sorted(a.items(), key = lambda x: -x[1])
+#0 element is the key, 1st element is the value
+sorted_counter_second
+```
+
+**Sort the Counter object by the count in descending order, break the ties by the key in ascending order, and return the top and bottom 4 tuples in the list:**
+
+```{python}
+sorted_counter_complex = sorted(a.items(), key = lambda x: (-x[1], x[0]))
+sorted_counter_complex
+
+print()
+
+Y = 4
+tie_breaker_sort_top_Y = sorted_counter_complex[:Y]
+tie_breaker_sort_top_Y
+
+tie_breaker_sort_bottom_Y = sorted_counter_complex[-Y:]
+tie_breaker_sort_bottom_Y
+```

@@ -1,0 +1,367 @@
+---
+title: "Loops & Comprehensions"
+author: "Sheyanne Rodriguez"
+date: "2024-09-05"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Loops and Comprehensions
+
+1.  Python Loops
+
+2.  Comprehensions: Lists and Dicts
+
+### Python Loops and Types
+
+1.  Iterate over a sequence, using a *for* loop
+
+LIST
+
+```{python}
+#Iterating over a list
+print("List Iteration")
+
+l = ["msa", "cse", "6040"] #[] is a list
+for i in l:
+  print(i)
+```
+
+TUPLE
+
+```{python}
+#Iterating over a tuple (immutable)
+
+print("\nTuple Iteration")
+
+t = ("msa", "cse", "6040") #() would be a tuple
+
+for i in t:
+  print(i)
+```
+
+STRING
+
+```{python}
+#Iterating over a string
+
+print("\nString Iteration")
+s = "msa cse 6040" #m is the first iteration & so on
+for i in s: #each 'i' is an individual character
+  print(i)
+```
+
+DICTIONARY
+
+```{python}
+#Iterating over a dictionary
+print("\nDictionary Iteration")
+d = dict()
+d['0'] = "msa" #0 is the key 'msa' is the value
+d['1'] = "cse"
+d['2'] = "6040"
+
+for i in d:
+  print("{} : {}".format(i, d[i])) #.format replaces {} with key and value
+  #How we get that value, simply index the value from the dictionary
+```
+
+SET
+
+```{python}
+#Iterating over a set (UNORDERED)
+print("\nSet Iteration")
+set1 = {1, 2, 3, 4, 5, 6}
+for i in set1:
+  print(i)
+```
+
+2.  Iterating over a sequence by **index**, using a *for* loop.
+
+```{python}
+course_list = ['msa', 'cse', '6040']
+
+#output the index position number
+for index in range(len(course_list)):
+  print(index)
+
+#Maybe you have a list of people and maybe theyre sorted in a way that your
+#highest performing 'student' is at the first of your list
+#reutrn: whats your 10 highest performing 'students'
+```
+
+```{python}
+#output the value at the index
+for index in range(len(course_list)):
+  print(course_list[index]) #index = numbers
+  #index can be replaced with a number as well if needed to be specific
+```
+
+Very useful- range() function
+
+```{python}
+a = list(range(10))
+b = list(range(5, 10))
+c = list(range(0, 10, 3)) #stepsize of 3
+
+print('One argument form - {}'.format(a))
+print('Two argument form - {}'.format(b))
+print('Three argument form - {}'.format(c))
+```
+
+So what have we done here?
+
+```{python}
+#same as above
+range_list = []
+for x in range(10):
+  range_list.append(x)
+print(range_list)
+```
+
+### Comprehension in Python
+
+1.  List comprehension
+
+2.  Dictionary comprehension
+
+3.  Set comprehension
+
+**List Comprehension**
+
+A list comprehension consists of the following parts-
+
+1.  An input Sequence.
+
+2.  A Variable representing members of the input sequence.
+
+3.  An optional Conditional Expression.
+
+4.  An Output Expression producing elements of output list from members of the input sequence that satisfy the predicate.
+
+#### [ x for x in range(10) ]
+
+```{python}
+#new_list = [output_expression w/ altering as needed for var in input_list if var meets some condition]
+#new_list = [output_expression for var in input_list]
+```
+
+```{python}
+#loop format -- recall from above
+range_list = []
+for x in range(10):
+  range_list.append(x)
+print(range_list)
+```
+
+Comprehension example:
+
+```{python}
+#Comprehension format
+range_list_comp = [x for x in range(10)]
+print(range_list_comp)
+```
+
+```{python}
+#SET COMPREHENSION:
+prove_its_a_set = [1, 2, 3, 4, 4, 4]
+range_list_comp = {x for x in prove_its_a_set}
+#range_list_comp = {x for x in range(10)} #Curly brackets
+print(range_list_comp)
+```
+
+Let's create a list of mixed integers and strings, and only output a result if the input is an integer.
+
+```{python}
+a_list = [1, '4', 9, 'a', 0, 4]
+a_list
+
+sq_list = []
+for e in a_list:
+  if(type(e) == int):
+    sq_list.append(e*e)
+sq_list
+```
+
+```{python}
+a_list
+```
+
+We're trying to get the integer squared so, e \* e, our elements times themselves.
+
+```{python}
+sqaured_ints = [e**2 for e in a_list if type(e) == int] #or e*e instead of e**2
+#if type(e) == int is a filter conditional statement.
+print(sqaured_ints)
+```
+
+**Filtering decides whether a given element can come into your new data structure.**
+
+Another Example:
+
+```{python}
+my_list = [1,2,3,4,5,6,7,8,9,10]
+
+#Using a loop
+new_list_loop = []
+for number in my_list:
+  #using modules operator, which returns the remainder of a division
+  #so this statement only returns even numbers
+  if number % 2 == 0: #even number
+    new_list_loop.append(number)
+    
+new_list_loop
+```
+
+```{python}
+new_list_comp = [number for number in my_list if number % 2 == 0]
+new_list_comp
+```
+
+Another example for adding the number 15 if the number is odd:
+
+```{python}
+# loop using if else
+new_list_loop_2 = []
+for number in my_list:
+  if number % 2 == 0:
+    new_list_loop_2.append(number) #append(number) means as is
+  else:
+    new_list_loop_2.append(15) #15 replaces odd numbers
+new_list_loop_2
+```
+
+```{python}
+new_list_1 = [number if number % 2 == 0 else 15 for number in my_list] #number if number .. else 15 is referred to as altered
+new_list_1
+```
+
+For example above: we only want the number as is if that number is even. If not, I want the number 15. Therefore, I want to output my number as is if it meets a certain condition. If not, I want to output the number 15. What do I want to do that for? I want to do that for every number in *my_list.*
+
+**\*\*Altering decides what shape that element ultimately takes in your new data structure.**
+
+STRING EXAMPLE: .UPPER() AND .LOWER()
+
+```{python}
+# string function in the comprehension
+colors = ["pink", "white", "blue", "black", "purple"]
+[color.upper() for color in colors]
+
+colors2 = ["PINK", "WHITE", "BLUE", "BLACK", "PURPLE"]
+[color.lower() for color in colors2]
+```
+
+### What if we want to take a list of names and change their format to be last name, first name?
+
+Simple two step process, using list comprehension. Note that there are many ways you can perform this operation, and we are just showing a simple way, to illustrate using comprehensions.
+
+```{python}
+#List of names
+presidents_usa = ["George Washington", "John Adams", "Thomas Jefferson", "James Madison", "James Monroe", "Andrew Jackson"]
+
+#divide the names into first and last name elements
+
+split_names = [name.split(" ") for name in presidents_usa]
+split_names
+```
+
+```{python}
+#List comprehension
+swapped_list = [split_name[1] + ", " + split_name[0] for split_name in split_names]
+swapped_list
+```
+
+We say for each element in the presidents_usa list, the zero element corresponds to "George" and the first element corresponds to "Washington". So, we can grab the first element at the first *index* location -\> split_name[1].
+
+Use string concatenation, the + operator to do *string concatenation.* for each of the first and last names in the list.
+
+Therefore, it reads split_name[1] == Washington "," == , split_name[0] == George for each one of these nested lists within my split_names overall list.
+
+Example: List of Lists
+
+```{python}
+list_of_lists = [['Larry', 'katie'], ['JOEL', 'Shan'], ['spiros'],['RIShi']]
+#CLEANSING EFFORT
+#"Give me a list of all bootcamp instructors except for Katie"
+one_big_lowercase_list = [name.lower() for sublist in list_of_lists for name in sublist if name.lower() != 'katie']
+one_big_lowercase_list
+```
+
+## Dictionary Comprehension
+
+{key(k):value(v) for (k, v) in iterable}
+
+key(k): value(v) == functions to create key and value
+
+(k, v) == variables from iterable
+
+iterable == dict, tuple, set, string, etc.
+
+Example:
+
+```{python}
+#create a dictionary using for loop
+loop_dict = {} #create empty dict
+for num in range(1, 11):
+  loop_dict[num] = num*num
+  
+loop_dict
+```
+
+{key: value for vars in iterable} == {num: num\*num for num in range(1, 11)}
+
+```{python}
+comp_dict = {num: num*num for num in range(1, 11)} #curly brackets to create a dictionary!!
+comp_dict
+```
+
+#### Can we do a dictionary comprehension with some sort of filtering condition at the end? YES
+
+We want to only keep the entries where the title contains '*data'* :
+
+```{python}
+persons = [
+    {
+        'name': 'Vuduc',
+        'age': 40,
+        'title': 'Data Scientist'
+    },
+    {
+        'name': 'Sokol',
+        'age': 45,
+        'title': 'Data Engineer'
+    },
+    {
+        'name': 'Wooley',
+        'age': 43,
+        'title': 'Program Director'
+    }
+]
+```
+
+Use a for loop to create this new dictionary that we ultimately want.
+
+```{python}
+data_employees_loop = {}
+for p in persons:
+  print(p) #p is the dictionary, so each element of the list is a dict
+  if 'Data' in p['title']:
+    data_employees_loop[p['name']] = p['title']
+#  else:
+#      print(p['name'])
+```
+
+```{python}
+data_employees_loop
+```
+
+Dictionary Comprehension example:
+
+```{python}
+#create using dictionary comprehension
+data_employees_comprehension = {p['name']:p['title'] for p in persons if 'Data' in p['title']}
+data_employees_comprehension
+```

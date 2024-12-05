@@ -1,0 +1,185 @@
+---
+title: "Bootcamp on Dictionaries Pt2"
+author: "Sheyanne Rodriguez"
+date: "2024-09-04"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Python Data Structures: Dictionaries Pt 2
+
+### Heterogeneous Python Dictionaries
+
+So far, we have mainly seen dictionaries which consistently map one type of data to another type.
+
+-   For example, the key is a string and the value is an integer.
+
+However, we can use any hashable (which usually means immutable) type as a key in a dictionary, and *any* type as a value. Python dictionaries allow you to mix and match within a dictionary. The dictionary below has two entries with the following structure:
+
+-   key: typle -\> Value: list
+
+-   key: int -\> Value: tuple
+
+```{python}
+messy_dictionary = {(1, 2): ["This", "is", "a", "list", "with", "a", "tuple", "key"],
+"dict key": {
+  "example_key": 1,
+  0: (3, "10")
+}}
+messy_dictionary
+```
+
+-   This is to point out that you *can* do it.
+
+-   However, you should probably be thinking very carefully before you do something like this.
+
+-   Remember, the point of data structures is usually to **group similar pieces of data together.** If you're mixing and matching data types to this degree, your data might not be meaningfully similar enough to store it in one place.
+
+    -   If you do this sort of thing, you should be acutely aware of how your code might produce unexpected results.
+
+## Dictionary-like Containers: Counters and Default Dictionaries
+
+Why do these Exist?
+
+Dictionaries are very flexible data structures. These are a few common use-cases for them, and it might be nice to have something slightly customized for those purposes.
+
+-   Counters
+
+-   Default Dictionaries
+
+```{python}
+from collections import Counter, defaultdict
+print("Is a counter a dictionary?", isinstance(Counter(), dict))
+print("Is a default dictionary a dictionary?", isinstance(defaultdict(), dict))
+```
+
+```{python}
+print("Is a counter a dictionary?", type(Counter())== dict)
+print("Is a deafult dictionary a dictionary?", type(defaultdict())== dict)
+```
+
+```{python}
+print(type(Counter()))
+print(type(defaultdict()))
+print(type(dict()))
+```
+
+### Counters
+
+They allow us to quickly and easily build dictionaries which **store the count of elements contained in an iterable.**
+
+-   For example, suppose we wish to count the number of occurrences of a character in a string.
+
+    -   Here's a sample string: s = "bbbaaaabaaa"
+
+    -   In this case, 'a' occurs 7 times and 'b' occurs 4 times
+
+-   Let's say we want to construct a dictionary count(such that count['a'] == 7 **and** count['b'] == 4.
+
+    -   Method 1 in the cell below does *not work!* Try un-commenting it to see.
+
+        -   We need to initialize the count to 0 for every new unique key.
+
+    -   Method 2 works, but is pretty verbose. Do we really have to write all of this every time we want to count elements and store them in a dictionary?
+
+```{python}
+#Defining our string
+
+s = "bbbaaaabaaa"
+
+#Method1 (does not work!)
+#count = {}
+#for c in s:
+#  count[c] += 1 Increment by 1
+#count
+
+#Method 2 (works, but pretty long!)
+#Create an empty dictionary
+count = {}
+for c in s:
+  if c not in count:
+    count[c] = 0
+    assert c in count
+    count[c] += 1
+count
+
+```
+
+Counters let us do this automatically. Here's the same task, but by using a counter.
+
+```{python}
+from collections import Counter
+
+#Create the counter
+count = Counter(s)
+print('Initial :', count)
+
+#We can add to it by supplying a new iterable and using .update()
+```
+
+```{python}
+count.update('abcdaab')
+print('Updated: ', count)
+
+#If a value hasn't occurred, but the counter won't throw an error!
+print('How many times have we seen the letter "z"?', count["z"])
+```
+
+### Default Dictionaries
+
+-   Remember, we can use .get() to get a default value.
+
+    -   However, we'll need to specify the default value each *time* we try to retrieve a value
+
+    -   The default value will *not* be automatically added to the dictionary
+
+-   Default dictionaries let us automatically insert a value into the dictionary when we try to index on a non-existent key.
+
+    -   **A dictionary but you assign a default value if there is no key existing in it.**
+
+    -   We do this by giving it a function, which will return some value by default.
+
+    -   Let's look at an example:
+
+```{python}
+#Let's create a counter-like dictionary
+default_count = defaultdict(int)
+#default_count = defaultdict(float)
+#default_count = defaultdict(str)
+#If a key doesn't exist, it will default to 0 and be added to the dictionary
+for c in s:
+  default_count[c] += 1
+  
+print(default_count)
+```
+
+[What if we want to create a dictionary which returns a string?]{.underline}
+
+```{python}
+#What if we want to create a dict which returns a str
+#Let's assume we have a starting dict
+harry_potter_dict = {"Harry Potter": "Gryffindor",
+"Ron Weasley": "Gryffindor",
+"Hermione Granger": "Gryffindor",
+"Draco Malfoy": "Slytherin", "Cedirc Diggory": "Hufflepuff"}
+
+#Now create a default dictionary
+harry_potter_default = defaultdict(str, harry_potter_dict)
+print(harry_potter_default)
+print()
+
+#What happens if we try to index on a non-existent key
+print("Dumbledore's house is :", harry_potter_default["Albus Dumbledore"])
+print(harry_potter_default)
+```
+
+Note that the default dictionary created the new key, with an empty string as the value.
+
+There is a way to define an actual default value, using **lambda** function.
+
+## Summary
+
+-   Dictionaries can be used to group other data containers like lists, tuples, and even other dictionaries.
