@@ -1,0 +1,242 @@
+---
+title: "Values, Variables, and Types"
+author: "Sheyanne Rodriguez"
+date: "2024-08-23"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Basics with Value Types in Code
+
+```{python}
+3
+
+type(3)
+
+3.0
+
+type(3.0)
+
+"3"
+
+type("3")
+
+```
+
+Variables Name Values:
+
+```{python}
+x = 5
+print(x)
+```
+
+*Values may be combined using the “natural” operators. For integers and floats,*
+
+*for example, these are the options:*
+
+| Operator | Name           | Description                                   |
+|----------|----------------|-----------------------------------------------|
+| a + b    | Addition       | Sum of a and b                                |
+| a - b    | Subtraction    | Difference of a and b                         |
+| a \* b   | Multiplication | Product of a and b                            |
+| a / b    | True Division  | Quotient of a and b                           |
+| a // b   | Floor Division | Quotient of a and b removing fractional parts |
+| a % b    | Modulus        | Integer remainder after division of a by b    |
+| a \*\* b | Exponentiation | a raised to the power of b                    |
+| -a       | Negation       | Negative of a                                 |
+
+Example:
+
+```{python}
+print(2*x + 3)
+```
+
+Example: Aside. Formatted I/O and formatted string literals:
+
+```{python}
+print('{X} has type {T}'.format(X = x, T = type(x)))
+print(f'{x} has type {type(x)}')
+```
+
+Example: Type promotion. For some types, the type of result is promoted automatically:
+
+```{python}
+x = 1
+y = 2
+z = x / y
+
+print(x, 'has type', type(x))
+print(y, 'has type', type(y))
+print(z, 'has type', type(z))
+```
+
+Example: Type Promotion. For some types, the type of the result is promoted automatically:
+
+```{python}
+# Aside: integer division (floor)
+print(5 / 2, type(5 / 2))
+print(5 // 2, type(5 //2))
+```
+
+Example: Type Queries (asking for a type):
+
+```{python}
+x = 5
+print(type(x) is int)
+print(type(x), isinstance(x, int)) #Preferred idiom
+
+print(type(True), isinstance(True,int))
+print(type(5.0), isinstance(5.0, type(x)))
+print(type('5'), isinstance('5', type(x)))
+print(type(5.0), isinstance(5.0, complex)) #Does not always behave as expected.
+
+(5.0).is_integer() #Special test for floating point values
+```
+
+Example: None/ NoneType. The *none-value* value, None, and its and type:
+
+```{python}
+x = None
+print(x, ':', type(x))
+print(x == None, x != None)
+print(x is None, x is not None) #PREFERRED IDIOM
+```
+
+Example: "Big" integers by default. Integers do not "overflow" as they do in most other langauges:
+
+```{python}
+print('(a)', 3 **4)
+print('(b)', 3 ** 40)
+print('(c)', 3 **400)
+```
+
+Example: Math functions. For numerical values, many of the functions you might want are available in the *math* module.
+
+```{python}
+import math
+math
+```
+
+## **STRINGS**
+
+Example:
+
+```{python}
+bottle = "message"
+print(bottle, ':', type(bottle))
+
+bottle + bottle
+
+'sag' in bottle
+
+sixpack = bottle * 6
+print("|'{s}'| == {n}.".format(s = sixpack, n = len(sixpack)))
+
+bottle.upper()
+
+```
+
+Example: Slices. Let 0 \<= a \< b. Then a : b is a slice that specifies the right-open interval, [a, b).
+
+```{python}
+print("'{}'".format(bottle[3:5]))
+print("'{}'".format(bottle[5:3])) #Empty since a >= b
+```
+
+If a (or b) is negative, then it is replaced with n + a (or n +b), where n is the length of the string. In other words, negative positions are interpreted as "counting from the end".
+
+```{python}
+print("'{}'".format(bottle[-3:-5]))
+print("'{}'".format(bottle[-5:-3]))
+```
+
+a slice may have a third paramter, a : b : s, where s denotes the step size. Again, assume 0 \<= a \< b and suppose s \> 0. Then the 3-parameter slice a : b : s expands into the sequence, a, a + s, a +2s, ...., a + (k-1)s, where k = [b - a/s].
+
+Defaults. Omitting a, b, or s yields the defaults of a = 0, b = len(x), and s = 1.
+
+```{python}
+print(bottle[2:7:2])
+print(bottle[2::2])
+```
+
+Example: Right-open intervals allow simple splittings of intervals.
+
+```{python}
+print(bottle[:4], # Up to (but excluding) 4, since intervals are right-open
+      bottle[4:])  #Resume at 4
+      
+k = len(bottle) - 3 #Note: len(bottle) == 7, so this is same as above
+print(bottle[:k], bottle[k:])
+k = -3 # Recall: a negative endpoint x becomes n + x
+print(bottle[:-3], bottle[-3:]) #Shorthand
+```
+
+Negative steps (s \< 0) reverse the direction. That is, if s \< 0 then one cannot have a non-empty sequence unless a \> b. The defaults for omitted a and b values change to a = n-1 and b = -1 (recall that the intervals are right-open).
+
+```{python}
+bottle = "message"
+print(bottle[::-1])
+print(bottle[::-2], bottle[6::-2])
+print("'{}'".format(bottle[0::1]))
+print("'{}'".format(bottle[0::-1]))
+```
+
+Example: Aside: Slices are objects!
+
+```{python}
+ind = slice(6, None, -2)
+print(bottle[6::-2], bottle[ind])
+```
+
+## BOOLEANS AND BIT MANIPULATION
+
+Boolean variables can take on the values of True or False. The built-in boolean operation are and, or and not.
+
+Example:
+
+```{python}
+print(True or False)
+print(True or True)
+print(not True)
+```
+
+In addition to booleans, you can also perform bit-level manipulations on integers. The following operators perform logical operations bitwise between the corresponding bits of the operands.
+
+| Operator | Name             | Description                       |
+|----------|------------------|-----------------------------------|
+| a & b    | Bitwise AND      | Bits defined in both a and b      |
+| a \| b   | Bitwise OR       | Bits defined in a or b or both    |
+| a \^ b   | Bitwise XOR      | Defined in a or b but not both    |
+| a \<\< b | Bits shift left  | Shifts bits of a left by b units  |
+| a \>\> b | Bits shift right | Shifts bits of a right by b units |
+| \~a      | Bitwise NOT      | Bitwise negations of a            |
+
+First, some different ways to inspect the binary representations of integer values as strings (see also bin() in the Pythin docs):
+
+Example:
+
+```{python}
+print(bin(5))
+print(format(5, '#b'))
+print(format(5, 'b')) #no prefix
+print(f'{5:#b}', f'{5:b}')
+print('{:07b}'.format(5))  #7 bits with leading zeros
+
+
+print('{:06b}'.format(5)) #Use '{:06b}' for a 6 but string prefixed by '0b'
+print('{:06b}'.format(13))
+print('{:06b}'.format(5 & 13))
+```
+
+## SYNTATIC SUGAR: UPDATE OPERATIONS
+
+```{python}
+x = 5
+y = x
+y += 3  ##same as y = y +3##
+print(x,y)
+
+```

@@ -1,0 +1,422 @@
+---
+title: "Basic Collections"
+author: "Sheyanne Rodriguez"
+date: "2024-08-24"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## TUPLES
+
+a tuple is a read-only ("immutable") fixed length sequence of values.
+
+```{python}
+z = ("a", "pair")
+print(z)
+print("element 0:", z[0], "\nelement1:", z[1]) #Random access of values
+
+("4-tuple", 4, 1.2, False) #Mix values
+```
+
+"Immutability" means you cannot modify the length of the tuple nor change its values.
+
+**Aside: mutability.** Mutability is an important concept in Python, as certain critical operations may only be applied to mutable objects. You can think of the primitive built-in type–int, float, bool, str– as **immutable**. Tuples are also immutable, although it may hold mutable objects.
+
+## LISTS
+
+a list of values is a sequence, and is similar to arrays in other languages. it provides fast random access (x[i], using zero-based indices) and fast appends, but slow arbitrary insertions and search. Individual values (elements) of a list need not have the same type.
+
+```{python}
+x = [1, 2, 3]
+y = [4, "xo", 6.7, True]
+z = x + y
+print("Concat lists: {} + {} = {} (total length is {})".format(x, y, z, len(z)))
+
+print(z[2], z[4], z[6])
+print(z[2::2]) #Slice (and later, dice)
+print(z[::-1])
+```
+
+**List constructor.** The list type, denoted by *list* in Python, can also be used to construct as empty list or a list object from another collection type. A pair of empty square brackets is synonymous.
+
+```{python}
+empty_list = []
+print(empty_list)
+
+another_empty_list = list()
+print(another_empty_list)
+
+list_from_string = list('abcdefg')
+print(list_from_string)
+```
+
+**Modifying lists.**
+
+```{python}
+#Make a change
+print(z)
+#z[2] = -(z[2] + z[3])
+#print(z)
+
+```
+
+```{python}
+#Undo the change
+z[2] *= -1
+z[2] -= z[3]
+print(z)
+```
+
+```{python}
+z.append("one more value...") #Methods, some of which involve in-place modifications
+print(z)
+```
+
+```{python}
+print(z)
+z.reverse()
+print(z)
+```
+
+```{python}
+z.reverse()
+print(z)
+```
+
+**List comprehensions.** Use this compact construct to build up lists of values.
+
+```{python}
+c = [2*xi for xi in x + y] # "double" every element
+print(c)
+```
+
+Additionally, there is a conditional clause for filtering comprehension values.
+
+```{python}
+g = [i for i in range(10)] # 0..9
+from random import shuffle
+shuffle(g) #permute randomly
+
+print('g =', g)
+
+#select only even values
+h = [i for i in g if (i % 2) == 0]
+print('h = even(g) =', h)
+```
+
+**Zipper iteration**s. Use *zip*(a, b, ...) to "merge" two or more collections. Conceptually, *zip()* produces tuples of corresponding elements from each input collection.
+
+```{python}
+# "Merge" forward and reverse lists
+[(f, b) for f, b in zip(c, c[::-1])]
+```
+
+**Performance: append vs. insert.** Appending values to a list is fast compared to arbitrary insertions.
+
+```{python}
+#Insert 100,000 values at the front of the list (index = 0)
+c0 = []
+t_insert = %timeit -o -n1000 -r100 c0.insert(0,'a')
+```
+
+```{python}
+# Append 100,000 values at the end of the list
+c1 = []
+t_append = %timeit -o -n1000 -r100 c1.append('a')
+```
+
+```{python}
+#Verify that the outputs of the above are the same
+assert all([a == b for a, b in zip(c0,c1)]), "Answers differed?"
+
+#Report the ratio of execution times
+print("==> (insert time) / (append time) for 100,000 ops: ~ {:.1f}x".format(t_insert.average / t_append.average))
+```
+
+**Performance, part 2:** search. Simple searches, which can be performed using the membership-test operator, in, can be slow.
+
+```{python}
+long_list = list(range(100000))
+shuffle(long_list)
+
+#Inspect first and last five elements:
+print('long_list =', long_list[:5], '...', long_list[-5:], ' (all values are unique)' )
+first_elem = long_list[0]
+last_elem = long_list[-1]
+print('\n{} in long_list == {}'.format(first_elem, first_elem in long_list))
+print('{} in long_list == {}'.format(last_elem, last_elem in long_list))
+```
+
+```{python}
+print('\nTimes to search a list of {} values (all unique):'.format(len(long_list)))
+t_first = %timeit -o first_elem in long_list
+t_last = %timeit -o last_elem in long_list
+print('\n==> Ratio: ~ {:.1f}x'.format(t_last.average / t_first.average))
+```
+
+## ASIDE: VARIABLES ARE REFERENCES
+
+One subtlety about variables is that you should always think of them as references or "pointers" to the underlying object or value. Example:
+
+```{python}
+x = [1, 2, 3]
+y = x
+x.append(4) #append() method adds an element to the end of the list
+print(x)
+print(y)
+```
+
+Observe that y and x "point" to the same object.
+
+The Python *is* operator can be used to test whether two references are identical, and *.copy()* can be used to clone a list to be distinct references.
+
+```{python}
+print(x is y)
+print(x is not y) #By the way...
+```
+
+```{python}
+z = y.copy() #copies the value of y from the previous code
+print(x is z)
+
+x.append(len(x) +1)
+print(x, z)
+```
+
+## SETS
+
+A Python set is like a mathematical set: all values are unique and immutable (more later). Therefore, the underlying implementation is free to organize values in clever ways so that search or membership-test becomes much faster than with lists.
+
+| A set is itself mutable, even though its values must be immutable. If you require an immutable set, use frozenset.
+
+```{python}
+A = {1, 2, 3, 4, 5}
+B = {3, 4, 5, 6, 7}
+print(A, '&', B, '==', A & B) #intersection
+print(A, '|', B, '==', A | B) #union
+print(A, '-', B, '==', A - B) #difference
+print(A, '<', B, '==', A < B) #proper subject (use '<= for subset, '>' or '>=' for superset, or '==' for equality)
+```
+
+```{python}
+A.add(8)
+print(A)
+
+A.update({-1, -2, -3})
+print(A)
+```
+
+Under the hood, Python is free to reorder your values. So if you create a set with values in a particular order, don't assume these are maintained when printing or iterating over the set:
+
+```{python}
+A2 = {5, 4, 3, 2, 1}
+print(A2)
+print([a for a in A2])
+```
+
+Values are not limited to integers and, like lists, elements may mix types. **However, the elements must be immutable.** Recall that the primitive built-in types (e.g., int, float, str, bool) are immutable, as is *tuple.* However, a *list* is mutable, and therefore cannot be a set element.
+
+```{python}
+E = {'cat', 1.61803398875, ('a', 'b', 'c')}
+#E.add([1, 2, 3]) #Error!!
+print(E)
+#order of output can change
+```
+
+| There is a subtlety – although *tuple* is immutable, you can construct a *tuple* that contains mutable values, e.g., the triple (1, 2, [3, 4, 5]) where the third element is a *list,* which is mutable. This tuple would be an invalid set element.
+
+```{python}
+C = {1, 2, 3.14159, bin(1387)}
+print(C)
+```
+
+**Performance of membership tests.**
+
+```{python}
+big_set = set(long_list) #Convert list to set
+
+print('{} in big_set == {}'.format(first_elem, first_elem in big_set))
+print('{} in big_set == {}'.format(last_elem, last_elem in big_set))
+```
+
+```{python}
+print('\nTimes to search a set of {} values (all unique):'.format(len(big_set)))
+t_first = %timeit -o first_elem in big_set
+t_last = %timeit -o last_elem in big_set
+
+print('\n==> Ratio: ~ {:.1f}x'.format(t_last.average / t_first.average))
+```
+
+**Another example.** Let's use sets, whose values will be unique, to count the number of unique values in a list.
+
+```{python}
+# http://socialgoodipsum.com/#/
+social_good_ipsum = "Agile bandwidth; greenwashing citizen-centered; scale and impact shared value theory of change mass incarceration. Entrepreneur entrepreneur benefit corporation think tank effective her body her rights her body her rights strengthening infrastructure. Collective impact, her body her rights innovation thought provoking social enterprise boots on the ground. Radical black lives matter academic, our work energize granular inclusion expose the truth. Collective impact collective impact LGBTQ+ effective we must stand up. Collaborative cities; inspire, social intrapreneurship outcomes society impact bandwidth. Mass incarceration ecosystem problem-solvers, communities best practices social return on investment and synergy synergy. Shared value, equal opportunity; social innovation segmentation vibrant. Agile problem-solvers progress paradigm B-corp. State of play compelling, compelling; social innovation, effective systems thinking parse cultivate preliminary thinking. Global, triple bottom line; replicable, low-hanging fruit society collective impact society cultivate boots on the ground. Movements entrepreneur targeted, segmentation, game-changer. Empower communities, save the world thought leadership mobilize social entrepreneurship systems thinking impact investing. Correlation policymaker movements inspirational, empower communities, but, B-corp emerging. Social entrepreneurship, ideate scalable, philanthropy then thought leader. Save the world technology unprecedented challenge milestones challenges and opportunities sustainable a. Rubric collaborative consumption targeted, empathetic emerging; collaborative cities leverage. Corporate social responsibility inspire social return on investment cultivate shared vocabulary efficient commitment. State of play benefit corporation, theory of change strategy gender rights catalyze. Effective, change-makers engaging co-creation; circular think tank synergy we must stand up improve the world. Natural resources milestones the scale and impact silo compassion. Then, resilient, shared unit of analysis inspiring the inspire. Social return on investment change-makers strategize, co-create change-makers scale and impact issue outcomes overcome injustice. Correlation, social entrepreneurship shared value, social enterprise blended value LGBTQ+ strategy. Indicators, catalyze shared value inclusion; initiative unprecedented challenge and. Collaborative consumption, to, revolutionary ecosystem thought leader benefit corporation replicable engaging. Initiative gender rights collective."
+alpha_only = ''.join([c for c in social_good_ipsum if c.isalpha() or c.isspace()])
+tokens = alpha_only.split()
+print(f"The original string has {len(tokens)} tokens.")
+
+unique_tokens = set(tokens)
+print(f"Of these, {len(unique_tokens)} are unique.")
+
+```
+
+```{python}
+big_number = 123450687
+
+
+
+with_f_strings = f"{big_number:,}"
+print(with_f_strings)
+```
+
+## DICTIONARIES
+
+A dictionary is a map of unique keys to values. Like set elements, keys must be unique.
+
+```{python}
+d = {'pi_approx': 3.14159265359,
+      'E_approx': 2.71828182846,
+      'c_approx': '299,792,458 m/s',
+      'h_bar_approx': '6.62607004e-34 m^2 kg / s'}
+print('d =', d)
+```
+
+The keys in the above example all have the same type, but need not. For example, let's add some integer keys.
+
+```{python}
+d[0] = 0.0
+d[1] = 1.0
+d[-1] = -1.0
+d['minus_one'] = d[-1]
+print(len(d), 'key-value pairs:', d)
+```
+
+Deletion of keys:
+
+```{python}
+d.pop('minus_one') #deletes the element at the end of the list
+print(len(d), 'key-value pairs:', d)
+```
+
+```{python}
+print(d['c_approx'])
+print(d.keys())
+print(d.items()) #(key, value) pairs
+```
+
+Key-membership testing:
+
+```{python}
+print('h_bar_approx' in d)
+print('planck constant' in d)
+```
+
+Referencing missing keys will produce an error.
+
+```{python}
+#d['planck constant']
+```
+
+Example: Build an English-to-French dictionary.
+
+```{python}
+english = "one two three".split()
+print(english)
+
+french = "un deux trois".split()
+print(french)
+```
+
+```{python}
+e2f = {k: v for k, v in zip(english,french)} #Dictionary comprehension
+print(e2f['three'])
+```
+
+**Performance of key-membership testing.** The time to check if a key is present should be comparable to set-membership. That fact would imply that looking up a value in a dictionary will take about the same amount of time.
+
+```{python}
+big_dict = {v: True for v in long_list} #Convert list to dictionary
+#of (value, True) pairs
+
+print('{} in big_dict == {}'.format(first_elem, first_elem in big_dict))
+print('{} in big+dict == {}'.format(last_elem, last_elem in big_dict))
+
+print('\nTimes to search a dictionary of {} keys:'.format(len(big_dict)))
+t_first = %timeit -o first_elem in big_dict
+t_last = %timeit -o last_elem in big_dict
+
+print('\n==> Ratio: ~ {:.1f}x'.format(t_last.average / t_first.average))
+```
+
+| Recall that sets are unordered. Dictionary keys used to be unordered, too, but that changed as of Python 3.7. Our suggestion is to not assume anything about the ordering of keys in a dictionary.
+
+## ASIDE: NESTING
+
+Since lists and dictionaries can contain values (but not keys, in the case of dictionaries) of arbitrary types, you can nest data structures.
+
+**Example: Dictionary of dictionaries**
+
+```{python}
+numbers = {i+1: {'english': english[i],
+                'french': french[i]
+                } for i in range(3)
+                }
+print('2 is "{english}" in English and "{french}" in French.'.format(english=numbers[2]['english'],
+french=numbers[2]['french']))
+```
+
+**Aside within an aside: argument unpacking with dictionaries.** One trick that a dictionary enables is called *argument unpacking.* That is the substitution of keys for named arguments.
+
+For example, look at the print statement above: the .*format(...)* subexpression requires named arguments. If you have any dictionary with the same keys, you can substitute those using the \*\* operator:
+
+```{python}
+numbers
+```
+
+```{python}
+two = numbers[2]
+print(f"Dictionary 'two' is {two}.")
+print('\n==> 2 is "{english}" in English and "{french}" in French.'.format(**two))
+```
+
+## **SPLIT**
+
+```{python}
+potter_text = '''Mr. and Mrs. Dursley, of number four, Privet Drive, were proud to say that they were perfectly normal, thank you very much. They were the last people you’d expect to be in­volved in anything strange or mysterious, because they just didn’t hold with such nonsense. Mr. Dursley was the director of a firm called Grunnings, which made drills. He was a big, beefy man with hardly any neck, although he did have a very large mustache. Mrs. Dursley was thin and blonde and had nearly twice the usual amount of neck, which came in very useful as she spent so much of her time craning over garden fences, spying on the neighbors. The Dursleys had a small son called Dudley and in their opinion there was no finer boy anywhere. The Dursleys had everything they wanted, but they also had a secret, and their greatest fear was that somebody would discover it. They didn’t think they could bear it if anyone found out about the Potters. Mrs. Potter was Mrs. Dursley’s sister, but they hadn’t met for several years; in fact, Mrs. Dursley pretended she didn’t have a sister, because her sister and her good-for-nothing husband were as unDursleyish as it was possible to be. The Dursleys shuddered to think what the neighbors would say if the Potters arrived in the street. The Dursleys knew that the Potters had a small son, too, but they had never even seen him. This boy was another good reason for keeping the Potters away; they didn’t want Dudley mixing with a child like that. When Mr. and Mrs. Dursley woke up on the dull, gray Tuesday our story starts, there was nothing about the cloudy sky outside to suggest that strange and mysterious things would soon be happening all over the country. Mr. Dursley hummed as he picked out his most boring tie for work, and Mrs. Dursley gossiped away happily as she wrestled a screaming Dudley into his high chair. None of them noticed a large, tawny owl flutter past the window.'''
+first_50 = potter_text[:50]
+first_50
+
+
+#split with parameters not specified so will split on white space
+lst_first_50 = first_50.split()
+lst_first_50
+
+#a method to break down a time string into its components of hours,
+#minutes, and seconds
+current_time = '11:24:46'
+lst_time = current_time.split(':')
+print(lst_time)
+
+#three return variables, each its own string
+hours, mins, secs = current_time.split(":")
+print(hours, mins, secs)
+```
+
+## Join
+
+```{python}
+#recall that we made a variable that split a time string
+print(lst_time)
+
+str_time = ':'.join(lst_time)
+print(str_time)
+
+
+print(lst_first_50)
+sentence_text = ' '.join(lst_first_50)
+print(sentence_text)
+```

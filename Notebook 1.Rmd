@@ -1,0 +1,62 @@
+---
+title: "Notebook 1"
+author: "Sheyanne Rodriguez"
+date: "2024-08-27"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Exercise 0: Display the output string, Hello, world!
+
+```{python}
+print("Hello, world!")
+```
+
+## Exercise 1: create a variable named x_float whose numerical value is one (1) and whose type is *floating-point (*i.e., float).
+
+```{python}
+x_float = 1.0
+x_float
+```
+
+## Exercise 2: Complete the following function, *strcat_ba(a, b),* so that given two strings, a and b, it returns the concatenation of b followed by a.
+
+```{python}
+def strcat_ba(a, b):
+  assert type(a) is str, f"Input argument 'a' has 'type(a)' is {type(a)} rather than 'str'"
+  assert type(b) is str
+  
+  return b + a
+
+```
+
+## Exercise 3: Complete the following function, *strcat_list(L),* which generalizes the previous function: given a *list* of strings, L[:], returns the concatenation of the strings in reverse order.
+
+```{python}
+def strcat_list(L):
+  assert type(L) is list
+  
+  reverse_cat = ''
+  for i in reversed(L):
+    reverse_cat += i
+    return reverse_cat
+```
+
+## Exercise 4: Suppose you are given two variables, a and b, whose values are the real numbers, a \>= 0 and b \> 0. Complete the function, floor_function(a, b) so it returns a/b, the floor of a/b. The *type* of returned value must be an int.
+
+```{python}
+def is_number(x):
+  from numbers import Number
+  return isinstance(x, Number)
+
+def floor_fraction(a, b):
+  assert is_number(a) and a >= 0
+  assert is_number(b) and b> 0
+  
+  return int(a //b)
+floor_fraction(4,8)
+type(floor_fraction)
+```
